@@ -31,11 +31,15 @@ def get_orders():
 @app.route("/orders/<int:order_id>", methods=['GET'])
 def get_order_id(order_id):
     order = Order.query.get(order_id)
+    if order is None:
+        return jsonify({'chyba': 'nenajdene'}), 404
     return jsonify(order.to_dict())
 
 @app.route("/customers/<int:customer_id>/orders", methods=['GET'])
 def get_customer_orders(customer_id):
     orders = Order.query.filter_by(customer_id=customer_id).all()
+    if not orders:
+        return jsonify({'chyba': 'nenajdene'}), 404
     return jsonify([o.to_dict() for o in orders])
 
 @app.route("/customers/<int:customer_id>/orders", methods=['POST'])
@@ -49,6 +53,8 @@ def create_order(customer_id):
 @app.route("/orders/<int:order_id>", methods=['PUT'])
 def update_order(order_id):
     order = Order.query.get(order_id)
+    if order is None:
+        return jsonify({'chyba': 'nenajdene'}), 404
     data = request.get_json()
     order.product_name = data['product_name']
     order.quantity = data['quantity']
@@ -58,10 +64,11 @@ def update_order(order_id):
 @app.route("/orders/<int:order_id>", methods=['DELETE'])
 def delete_order(order_id):
     order = Order.query.get(order_id)
+    if order is None:
+        return jsonify({'chyba': 'nenajdene'}), 404
     db.session.delete(order)
     db.session.commit()
-    return jsonify({'objednavka zmazana'})
-
+    return f"\nobjednavka vymazana"
 
 if __name__ == '__main__':
     app.run(debug=True)
