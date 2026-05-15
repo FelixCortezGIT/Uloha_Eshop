@@ -14,5 +14,17 @@ db.init_app(app)
 def home():
     return "E-shop API"
 
+from customers import Customer
+
+@app.route("/customers", methods=['GET'])
+def get_customers():
+    customers = Customer.query.all()
+    return jsonify([{'id': c.id, 'name': c.name, 'email': c.email} for c in customers])
+
+
+# @app.route("/orders")
+# def get_orders():
+
+
 if __name__ == '__main__':
     app.run(debug=True)
