@@ -30,7 +30,7 @@ def get_orders():
 
 @app.route("/orders/<int:order_id>", methods=['GET'])
 def get_order_id(order_id):
-    order = Order.query.get(order_id)
+    order = db.session.get(Order, order_id)
     if order is None:
         return jsonify({'chyba': 'nenajdene'}), 404
     return jsonify(order.to_dict())
@@ -52,7 +52,7 @@ def create_order(customer_id):
 
 @app.route("/orders/<int:order_id>", methods=['PUT'])
 def update_order(order_id):
-    order = Order.query.get(order_id)
+    order = db.session.get(Order, order_id)
     if order is None:
         return jsonify({'chyba': 'nenajdene'}), 404
     data = request.get_json()
@@ -63,7 +63,7 @@ def update_order(order_id):
 
 @app.route("/orders/<int:order_id>", methods=['DELETE'])
 def delete_order(order_id):
-    order = Order.query.get(order_id)
+    order = db.session.get(Order, order_id)
     if order is None:
         return jsonify({'chyba': 'nenajdene'}), 404
     db.session.delete(order)
